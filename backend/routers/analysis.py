@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from services.analysis import analyze
 
@@ -16,9 +16,15 @@ def get_pair_analysis(
     interval: str = "1d",
     window: int = 21,
 ):
-    return analyze(
-        y=y,
-        x=x,
-        interval=interval,
-        window=window,
-    )
+    try:
+        return analyze(
+            y=y,
+            x=x,
+            interval=interval,
+            window=window,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e),
+        ) from e

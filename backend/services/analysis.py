@@ -30,14 +30,37 @@ def analyze(
     interval: str,
     window: int,
 ) -> dict:
-    prices = market_data_loader(
-        y=y,
-        x=x,
-        interval=interval,
-    )
+    if y == x:
+        raise ValueError("Y and X tickers must be different")
 
-    y_prices = prices[y]
-    x_prices = prices[x]
+    if window < 2:
+        raise ValueError("Window must be at least 2")
+
+    try:
+        prices = market_data_loader(
+            y=y,
+            x=x,
+            interval=interval,
+        )
+    except Exception as e:
+        raise ValueError(f"Dataset cannot load: {e}") from e
+
+    if prices.empty:
+        raise ValueError("Dataset is empty")
+
+    if "Y" not in prices.columns or "X" not in prices.columns:
+        raise ValueError(
+            f"Invalid dataset columns: {list(prices.columns)}"
+        )
+
+    if len(prices) < window:
+        raise ValueError(
+            f"Not enough data for window={window}. "
+            f"Available observations: {len(prices)}"
+        )
+
+    y_prices = prices["Y"]
+    x_prices = prices["X"]
 
     result = analyze_pair(
         y=y_prices,
@@ -45,13 +68,15 @@ def analyze(
         window=window,
     )
 
-    spread_series = result["spread"]
-    zscore_series = result["zscore"]
-
     series = pd.DataFrame({
-        "spread": spread_series,
-        "zscore": zscore_series,
+        "spread": result["spread"],
+        "zscore": result["zscore"],
     }).dropna()
+
+    if series.empty:
+        raise ValueError(
+            "Analysis produced no valid spread/z-score observations"
+        )
 
     chart_data = [
         {
@@ -69,16 +94,12 @@ def analyze(
         },
         "interval": interval,
         "window": window,
-
         "cointegration": result["cointegration"],
-
         "hedge": result["hedge"],
-
         "current": {
             "spread": float(series["spread"].iloc[-1]),
             "zscore": float(series["zscore"].iloc[-1]),
         },
-
         "series": chart_data,
     }
 

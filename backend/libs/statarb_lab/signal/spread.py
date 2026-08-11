@@ -1,5 +1,4 @@
 import pandas as pd
-from statarb_lab.stats.cointegration import CointegrationTester
 
 
 class SpreadCalculator:
@@ -20,13 +19,6 @@ class SpreadCalculator:
 
         spread = aligned["Y"] - self.beta * aligned["X"] - self.alpha
         spread.name = "spread"
-
-        adf_result = CointegrationTester().adf(spread, name="spread")
-
-        if not adf_result["stationary"]:
-            raise RuntimeError(
-                "Calculated spread is not stationary."
-            )
 
         return spread
 
