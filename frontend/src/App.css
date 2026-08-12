@@ -1,0 +1,321 @@
+.app {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+
+/* Header */
+
+.app h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.app > p {
+  margin-top: 16px;
+  color: #8b949e;
+}
+
+
+/* Analysis form */
+
+.analysis-form {
+  display: grid;
+
+  grid-template-columns:
+    minmax(140px, 1fr)
+    minmax(140px, 1fr)
+    120px
+    120px
+    auto;
+
+  gap: 16px;
+  align-items: end;
+
+  margin-top: 40px;
+}
+
+.analysis-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  min-width: 0;
+}
+
+.analysis-form input,
+.analysis-form select {
+  width: 100%;
+  min-width: 0;
+
+  padding: 10px 12px;
+
+  background: #161b22;
+  color: #e6edf3;
+
+  border: 1px solid #30363d;
+  border-radius: 6px;
+
+  font-size: 14px;
+}
+
+.analysis-form input:focus,
+.analysis-form select:focus {
+  outline: none;
+  border-color: #58a6ff;
+}
+
+.analysis-form button {
+  padding: 11px 20px;
+
+  background: #f0f6fc;
+  color: #0d1117;
+
+  border: none;
+  border-radius: 6px;
+
+  cursor: pointer;
+  white-space: nowrap;
+
+  font-weight: 600;
+}
+
+.analysis-form button:hover {
+  opacity: 0.9;
+}
+
+.analysis-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* Error */
+
+.error {
+  margin-top: 24px;
+  padding: 14px 16px;
+
+  color: #f85149;
+  background: rgba(248, 81, 73, 0.08);
+
+  border: 1px solid #f85149;
+  border-radius: 8px;
+}
+
+
+/* Result */
+
+.result {
+  margin-top: 40px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 16px;
+
+  margin-bottom: 20px;
+}
+
+.result-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.result-header p {
+  margin: 6px 0 0;
+  color: #8b949e;
+}
+
+.result-header > div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.result-header span {
+  color: #8b949e;
+  font-size: 13px;
+}
+
+.result-header strong {
+  font-size: 28px;
+}
+
+
+/* Stats */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  min-width: 0;
+
+  padding: 16px;
+
+  background: #161b22;
+
+  border: 1px solid #30363d;
+  border-radius: 8px;
+}
+
+.stat-label {
+  color: #8b949e;
+  font-size: 13px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+
+  word-break: break-word;
+}
+
+.stat-card small {
+  color: #8b949e;
+}
+
+.success {
+  color: #3fb950;
+}
+
+.danger {
+  color: #f85149;
+}
+
+
+/* Chart */
+
+.zscore-chart {
+  width: 100%;
+  height: 500px;
+
+  background: #0d1117;
+
+  border: 1px solid #30363d;
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+.chart-container {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* Optional raw JSON debug */
+
+.result pre {
+  margin-top: 20px;
+  padding: 20px;
+
+  overflow-x: auto;
+
+  background: #161b22;
+  color: #e6edf3;
+
+  border: 1px solid #30363d;
+  border-radius: 8px;
+}
+
+
+/* Tablet */
+
+@media (max-width: 1000px) {
+  .app {
+    padding: 28px 24px;
+  }
+
+  .analysis-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .analysis-form button {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .zscore-chart {
+    height: 420px;
+  }
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .app {
+    padding: 20px 16px;
+  }
+
+  .app h1 {
+    font-size: 28px;
+  }
+
+  .analysis-form {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+
+    margin-top: 28px;
+  }
+
+  .analysis-form button {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .result-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .result-header > div:last-child {
+    align-items: flex-start;
+  }
+
+  .zscore-chart {
+    height: 340px;
+  }
+}
+
+
+/* Very small phones */
+
+@media (max-width: 400px) {
+  .app {
+    padding: 16px 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .zscore-chart {
+    height: 300px;
+  }
+}
