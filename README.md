@@ -50,20 +50,29 @@ pair stands today, but it is not an out-of-sample measurement — see
 | Stats | statsmodels, pandas, numpy |
 | Market data | yfinance |
 | Frontend | React 19, Vite, lightweight-charts |
-| Delivery | Docker, nginx, Docker Compose |
+| Delivery | Docker, Docker Compose |
 
 ## Quick start
 
-### Docker Compose
+### Docker
+
+The root `Dockerfile` is multi-stage: it builds the Vite bundle with Node, then
+copies the output into the Python image, where FastAPI serves both the API and
+the static frontend from a single port. One image, one container, one process.
 
 ```bash
 docker compose up --build
 ```
 
-* Dashboard: <http://localhost:8080>
+* Dashboard: <http://localhost:8000>
 * API docs: <http://localhost:8000/docs>
 
+The container listens on `$PORT` when set, falling back to `8000`, so it drops
+onto platforms like Railway, Render or Fly without changes.
+
 ### Local development
+
+Run the two halves separately for hot reload.
 
 Backend:
 
@@ -81,11 +90,16 @@ npm install
 npm run dev
 ```
 
-The Vite dev server runs on <http://localhost:5173>, which is already in the
-backend's CORS allowlist along with the Compose origin on port `8080`. The
-frontend calls the API at `http://127.0.0.1:8000` directly.
+The Vite dev server runs on <http://localhost:5173> and proxies `/api` to the
+backend on port `8000`, so the frontend always calls the API with a relative
+path and never needs to know its host. The backend serves the built bundle only
+when a `static/` directory exists next to `main.py` — the Docker build creates
+it, local development does not, so the two modes stay out of each other's way.
 
 ## API
+
+Everything the backend owns lives under `/api`; every other path falls through
+to the frontend bundle. `GET /api/health` returns `{"status": "ok"}`.
 
 ### `GET /api/v1/analysis`
 
@@ -156,8 +170,11 @@ surfaces as-is:
 ## Layout
 
 ```text
+Dockerfile                   Multi-stage build: Vite bundle -> FastAPI image
+compose.yaml                 Single `app` service on port 8000
+
 backend/
-├── main.py                  FastAPI app and CORS setup
+├── main.py                  FastAPI app, CORS, static frontend mount
 ├── routers/analysis.py      GET /api/v1/analysis
 ├── services/
 │   ├── analysis.py          Validation, orchestration, JSON shaping
